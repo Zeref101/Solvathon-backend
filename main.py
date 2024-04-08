@@ -23,17 +23,6 @@ app.add_middleware(
 )
 
 
-class UserSignup(BaseModel):
-    email: str
-    password: str
-    name: str
-
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
-
-
 @app.post("/signup")
 async def signup_endpoint(user: UserSignup):
     return await signup(user)
