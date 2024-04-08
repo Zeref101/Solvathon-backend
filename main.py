@@ -1,8 +1,7 @@
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
-from firebase_admin import credentials, auth
-from pydantic import BaseModel
+from firebase_admin import credentials
 from routes.authentication import UserSignup, UserLogin, signup, login, get_user
 
 
