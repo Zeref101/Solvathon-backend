@@ -1,18 +1,7 @@
 from fastapi import HTTPException, Response
-from pydantic import BaseModel
 import firebase_admin
 from firebase_admin import auth
-
-
-class UserSignup(BaseModel):
-    email: str
-    password: str
-    name: str
-
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
+from models.authentication_model import UserSignup, UserLogin
 
 
 async def signup(user: UserSignup):
