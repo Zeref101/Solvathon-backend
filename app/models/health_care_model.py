@@ -12,15 +12,26 @@ class Block(str, Enum):
     D2 = "D2"
 
 
-class PatientInfo(BaseModel):
+class SeverityColorCode(str, Enum):
+    red = "red"
+    green = "green"
+    blue = "blue"
+
+
+class BasicPatientInfo(BaseModel):
     name: str
     block: Block
     room: int
     disease: str
     date: datetime.date
+
+
+class PatientInfo(BasicPatientInfo):
     prescription_given: List[str]
     remarks: List[str]
     reg_num: str
+    hospitalization: bool
+    severity: SeverityColorCode
 
     def to_firebase(self):
         """
