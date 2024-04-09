@@ -10,6 +10,7 @@ python = "^3.11"
 fastapi = "^0.110.1"
 uvicorn = "^0.29.0"
 firebase-admin = "^6.5.0"
+vonage = "^3.13.0"
 
 
 [build-system]
