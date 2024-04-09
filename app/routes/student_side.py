@@ -28,3 +28,11 @@ def get_pending_ambulance_requests():
     ambulance_req_ref = db.collection("ambulance_req")
     ambulance_req = ambulance_req_ref.where("approved", "==", False).stream()
     return [doc.to_dict() for doc in ambulance_req]
+
+
+@router.post("/approve_ambulance_request")
+def approve_ambulance_request(doc_id: str):
+    db = get_db()
+    ambulance_req_ref = db.collection("ambulance_req")
+    ambulance_req_ref.document(doc_id).update({"approved": True})
+    return {"message": "Ambulance request approved successfully"}
