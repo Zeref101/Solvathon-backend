@@ -2,8 +2,8 @@ from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
 from firebase_admin import credentials
-from routes.authentication import UserSignup, UserLogin, signup, login, get_user
-
+from app.routes.authentication import UserSignup, UserLogin, signup, login, get_user
+from app.routes import authentication
 
 if not firebase_admin._apps:
     cred = credentials.Certificate("serviceAccountKey.json")
@@ -21,20 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.post("/signup")
-async def signup_endpoint(user: UserSignup):
-    return await signup(user)
-
-
-@app.post("/login")
-async def login_endpoint(user: UserLogin, response: Response):
-    return await login(user, response)
-
-
-@app.get("/user/{uid}")
-async def getUser(uid: str):
-    return await get_user(uid)
+app.include_router(authentication.router)
 
 
 @app.get("/")
