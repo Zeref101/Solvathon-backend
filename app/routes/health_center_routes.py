@@ -4,6 +4,8 @@ from fastapi import APIRouter, HTTPException
 from app.models.health_care_model import BasicPatientInfo, PatientInfo
 from firebase_admin import auth, firestore
 from app.db import get_db
+import vonage
+
 
 router = APIRouter()
 
@@ -31,3 +33,15 @@ def get_patient_data(name: str, disease: str):
         raise HTTPException(status_code=404, detail="Patient not found")
 
     return [doc for doc in patients][0].to_dict()
+
+
+@router.get("/get_student/{reg_no}")
+def get_student_data(reg_no: str):
+    db = get_db()
+    students_ref = db.collection("students")
+    students = students_ref.where("reg_no", "==", reg_no).stream()
+
+    if not students:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    return [doc for doc in students][0].to_dict()
