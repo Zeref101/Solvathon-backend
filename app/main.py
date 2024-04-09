@@ -22,7 +22,7 @@ app.add_middleware(
 )
 
 app.include_router(authentication.router)
-app.include_router(health_center_routes.router)
+app.include_router(health_center_routes.router, prefix="/health_center")
 
 
 @app.get("/")

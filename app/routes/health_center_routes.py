@@ -110,7 +110,7 @@ def get_patient_data(name: str, disease: str):
     return [doc for doc in patients][0].to_dict()
 
 
-@router.get("/get_student/{reg_no}")
+@router.get("/get_students/{reg_no}")
 def get_student_data(reg_no: str):
     db = get_db()
     students_ref = db.collection("students")
