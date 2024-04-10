@@ -108,18 +108,63 @@ async def add_patient(patient_info: PatientInfo):
 def get_patient_data(name: str, disease: str):
     db = get_db()
     patients_ref = db.collection("patients")
+    print("Before Firestore query")
     patients = (
-        patients_ref.where("name", "==", name).where(
-            "disease", "==", disease).stream()
-    )
-
-    if not patients:
+    patients_ref.where("name", "==", name).where("disease", "==", disease).stream()
+)
+    print("After Firestore query")
+    patients_list = [doc.to_dict() for doc in patients]
+    if not patients_list:
         raise HTTPException(status_code=404, detail="Patient not found")
 
-    return [doc for doc in patients][0].to_dict()
+    return patients_list[0]
 
+@router.get("/getByBlock/")
+def get_patient_data(block: str):
+    db = get_db()
+    patients_ref = db.collection("patients")
+    print("Before Firestore query")
+    patients = (
+    patients_ref.where("block", "==", block).stream()
+)
+    print("After Firestore query")
+    patients_list = [doc.to_dict() for doc in patients]
+    if not patients_list:
+        raise HTTPException(status_code=404, detail="Patient not found")
 
-@router.get("/get_student/{reg_no}")
+    return patients_list
+
+@router.get("/getByStatus/")
+def get_patient_data(status: str):
+    db = get_db()
+    patients_ref = db.collection("patients")
+    print("Before Firestore query")
+    patients = (
+    patients_ref.where("status", "==", status).stream()
+)
+    print("After Firestore query")
+    patients_list = [doc.to_dict() for doc in patients]
+    if not patients_list:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    return patients_list
+
+@router.get("/getEmergency/")
+def get_patient_data():
+    db = get_db()
+    patients_ref = db.collection("emergency")
+    print("Before Firestore query")
+    patients = (
+    patients_ref.stream()
+)
+    print("After Firestore query")
+    patients_list = [doc.to_dict() for doc in patients]
+    if not patients_list:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    return patients_list
+
+@router.get("/get_students/{reg_no}")
 def get_student_data(reg_no: str):
     db = get_db()
     students_ref = db.collection("students")
