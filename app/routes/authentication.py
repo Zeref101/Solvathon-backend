@@ -134,3 +134,28 @@ async def get_doctor(doctor_id: str = Query(...)):
         return doc_dict
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/hostel/login")
+async def login(user: UserLogin, response: Response):
+    try:
+        user_record = auth.get_user_by_email(user.email)
+        if not user_record:
+            raise HTTPException(status_code=400, detail="Invalid credentials")
+
+        db = firestore.client()
+        doc_ref = db.collection('Hostel').document(user_record.uid)
+        doc = doc_ref.get()
+        if doc.exists:
+
+            user_info = doc.to_dict()
+
+            response.set_cookie(
+                key="jwt", value=user_record.uid, max_age=86400)
+
+            return user_info
+        else:
+            raise HTTPException(
+                status_code=400, detail="User not found in Hostel collection")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
