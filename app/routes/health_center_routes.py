@@ -83,7 +83,7 @@ def send_mail_gmail(recv_mail, subject, body):
     )
 
 
-@router.post("/add/")
+@router.post("/doctor/save-prescription")
 async def add_patient(patient_info: PatientInfo):
     db = get_db()
     try:
@@ -193,17 +193,17 @@ async def get_all_patients():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/doctor/save-prescription")
-async def save_prescription(prescription: Prescription):
-    try:
-        # Add prescription to Firestore
-        doc_ref = db.collection("Prescriptions").document()
-        doc_ref.set(prescription.dict())
-        return {"message": "Prescription saved successfully"}
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error saving prescription: {str(e)}"
-        )
+# @router.post("/doctor/save-prescription")
+# async def save_prescription(prescription: Prescription):
+#     try:
+#         # Add prescription to Firestore
+#         doc_ref = db.collection("Prescriptions").document()
+#         doc_ref.set(prescription.dict())
+#         return {"message": "Prescription saved successfully"}
+#     except Exception as e:
+#         raise HTTPException(
+#             status_code=500, detail=f"Error saving prescription: {str(e)}"
+#         )
 
 
 @router.post("/upload/")
