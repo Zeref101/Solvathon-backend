@@ -1,17 +1,25 @@
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, File, UploadFile
 
-from app.models.health_care_model import BasicPatientInfo, PatientInfo
+from app.models.health_care_model import BasicPatientInfo, PatientInfo, Prescription
 from firebase_admin import auth, firestore
 from app.db import get_db
 from app.hardcorder import WARDEN_EMAIL, MOTHER_EMAIL
+from firebase_admin import credentials, firestore, initialize_app, storage
+import firebase_admin
+
+
+# Initialize Firebase Admin SDK
+# Replace with your service account key path
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
 
 router = APIRouter()
-
-
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 
 def __send_mail(
@@ -136,3 +144,50 @@ def get_student_data(reg_no: str):
         raise HTTPException(status_code=404, detail="Student not found")
 
     return [doc for doc in students][0].to_dict()
+
+
+@router.get("/getPatients")
+async def get_all_patients():
+    try:
+        db = firestore.client()
+        patients = db.collection('patients').stream()
+
+        all_patients = []
+        for patient in patients:
+            patient_dict = patient.to_dict()
+            patient_dict['id'] = patient.id
+            all_patients.append(patient_dict)
+
+        return all_patients
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/doctor/save-prescription")
+async def save_prescription(prescription: Prescription):
+    try:
+        # Add prescription to Firestore
+        doc_ref = db.collection("Prescriptions").document()
+        doc_ref.set(prescription.dict())
+        return {"message": "Prescription saved successfully"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error saving prescription: {str(e)}"
+        )
+
+
+@router.post("/upload/")
+async def upload_files(files: List[UploadFile] = File(...)):
+    urls = []
+    for file in files:
+        # Upload file to Firebase Storage
+        bucket = storage.bucket()
+        blob = bucket.blob(file.filename)
+        blob.upload_from_file(file.file)
+
+        # Get download URL
+        url = blob.generate_signed_url(
+            expiration=3600)  # URL expires in 1 hour
+        urls.append(url)
+
+    return {"urls": urls}
