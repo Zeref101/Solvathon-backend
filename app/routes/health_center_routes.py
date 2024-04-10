@@ -124,7 +124,37 @@ def get_patient_data(block: str):
     if not patients_list:
         raise HTTPException(status_code=404, detail="Patient not found")
 
-    return patients_list[0]
+    return patients_list
+
+@router.get("/getByStatus/")
+def get_patient_data(status: str):
+    db = get_db()
+    patients_ref = db.collection("patients")
+    print("Before Firestore query")
+    patients = (
+    patients_ref.where("status", "==", status).stream()
+)
+    print("After Firestore query")
+    patients_list = [doc.to_dict() for doc in patients]
+    if not patients_list:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    return patients_list
+
+@router.get("/getEmergency/")
+def get_patient_data():
+    db = get_db()
+    patients_ref = db.collection("emergency")
+    print("Before Firestore query")
+    patients = (
+    patients_ref.stream()
+)
+    print("After Firestore query")
+    patients_list = [doc.to_dict() for doc in patients]
+    if not patients_list:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    return patients_list
 
 @router.get("/get_students/{reg_no}")
 def get_student_data(reg_no: str):

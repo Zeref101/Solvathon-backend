@@ -24,6 +24,8 @@ class BasicPatientInfo(BaseModel):
     room: int
     disease: str
     date: datetime.date
+    status: str
+
 
 
 class PatientInfo(BasicPatientInfo):

@@ -20,7 +20,7 @@ async def signup(user: UserSignup):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/login")
+@router.post("/student/login")
 async def login(user: UserLogin, response: Response):
     try:
         user_record = auth.get_user_by_email(user.email)
