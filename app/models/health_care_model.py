@@ -27,11 +27,11 @@ class BasicPatientInfo(BaseModel):
 
 
 class PatientInfo(BasicPatientInfo):
-    prescription_given: List[str]
-    remarks: List[str]
+    medicines: List[dict]
+    remarks: str = ""
     reg_num: str
     hospitalization: bool
-    severity: SeverityColorCode
+    severity: int
 
     def to_firebase(self):
         """
