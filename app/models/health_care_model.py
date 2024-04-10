@@ -46,3 +46,14 @@ class PatientInfo(BasicPatientInfo):
         )  # Convert date to ISO 8601 string format
         # Handle any other special data type formatting here.
         return data_dict
+
+
+class Prescription(BaseModel):
+    name: str
+    block: str
+    room: str
+    disease: str
+    date: str
+    severity: int
+    medicines: list
+    hospitalization: bool
